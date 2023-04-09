@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShoesStore.Models;
+using ShoesStore.ViewModels;
 using System.Diagnostics;
+using X.PagedList;
 
 namespace ShoesStore.Controllers
 {
@@ -16,15 +18,66 @@ namespace ShoesStore.Controllers
 
         public IActionResult Index()
         {
-            return View();
-        }
-
-        public IActionResult Shop()
-        {
             var lstGiay = db.Giays.GroupBy(x => x.TenGiay)
                         .Select(group => group.First())
                         .ToList();
-            return View(lstGiay);
+
+            List<GiayDTO> lstShoesDTO = new List<GiayDTO>();
+
+            foreach (var item in lstGiay)
+            {
+                GiayDTO temp = new GiayDTO
+                {
+                    MaGiay = item.MaGiay,
+                    TenLoai = db.LoaiGiays.Find(item.MaLoai).TenLoai,
+                    TenGiay = item.TenGiay,
+                    KichCo = item.KichCo,
+                    MauSac = item.MauSac,
+                    GiaGoc = item.GiaGoc,
+                    GiaBan = item.GiaBan,
+                    PhanTramGiam = item.PhanTramGiam,
+                    DanhGia = item.DanhGia,
+                    AnhDaiDien = item.AnhDaiDien,
+                    SoLuong = item.SoLuong
+                };
+                lstShoesDTO.Add(temp);
+            }
+            return View(lstShoesDTO);
+        }
+
+        public IActionResult Shop(int page = 1)
+        {
+            int pageNumber = page;
+            int pageSize = 3;
+
+            var lstGiay = db.Giays.GroupBy(x => x.TenGiay)
+                        .Select(group => group.First())
+                        .ToList();
+
+            List<GiayDTO> lstShoesDTO = new List<GiayDTO>();
+
+            foreach (var item in lstGiay)
+            {
+                GiayDTO temp = new GiayDTO
+                {
+                    MaGiay = item.MaGiay,
+                    TenLoai = db.LoaiGiays.Find(item.MaLoai).TenLoai,
+                    TenGiay = item.TenGiay,
+                    KichCo = item.KichCo,
+                    MauSac = item.MauSac,
+                    GiaGoc = item.GiaGoc,
+                    GiaBan = item.GiaBan,
+                    PhanTramGiam = item.PhanTramGiam,
+                    DanhGia = item.DanhGia,
+                    AnhDaiDien = item.AnhDaiDien,
+                    SoLuong = item.SoLuong
+                };
+                lstShoesDTO.Add(temp);
+            }
+
+            PagedList<GiayDTO> lstShoesDTOPaging = new PagedList<GiayDTO>(lstShoesDTO, pageNumber, pageSize);
+
+            return View(lstShoesDTOPaging);
         }
         public IActionResult Single()
         {
@@ -55,8 +108,6 @@ namespace ShoesStore.Controllers
         //{
         //    return View();
         //}
-
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
