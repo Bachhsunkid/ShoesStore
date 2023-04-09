@@ -6,10 +6,8 @@
         @foreach (var item in Model)
         {
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="ShoesType">
-                <label class="form-check-label" for="flexCheckDefault">
-                    @item.TenLoai
-                </label>
+                <input class="form-check-input" type="checkbox" value="@item.TenLoai" name="occasion" onclick="ShoesFilter()">
+                <span class="span">@item.TenLoai</span>
             </div>
         }
     </div>

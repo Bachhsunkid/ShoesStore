@@ -19,74 +19,18 @@
     <section class="ftco-section bg-light">
     	<div class="container">
     		<div class="row">
-    			<div class="col-md-8 col-lg-10 order-md-last">
-    				<div class="row">
+@*    			<div class="col-md-8 col-lg-10 order-md-last">
+					@await Html.PartialAsync("_ShoesFiltered", Model)
+		    	</div>*@
 
-		    			@foreach(var item in Model){
-                            <div class="col-sm-12 col-md-12 col-lg-4 ftco-animate d-flex fadeInUp ftco-animated">
-                                <div class="product d-flex flex-column">
-                                    <a href="#" class="img-prod">
-                                    <img class="img-fluid" src="@Url.Content("../images/"+item.AnhDaiDien)" alt="Colorlib Template">
-                                        <span class="status">@item.PhanTramGiam % Off</span>
-                                        <div class="overlay"></div>
-                                    </a>
-                                    <div class="text py-3 pb-4 px-3">
-                                        <div class="d-flex">
-                                            <div class="cat">
-                                                <span>@item.TenLoai</span>
-                                            </div>
-                                            <div class="rating">
-                                                <p class="text-right mb-0">
-                                                    @{
-											            double star = 0;
-											            for (var i = 1; i <= item.DanhGia; i++)
-											            {
-																	<a href="#"><span class="ion-ios-star"></span></a>
-												            star++;
-											            }
-											            if (item.DanhGia == 0.5 || item.DanhGia == 1.5 || item.DanhGia == 2.5 || item.DanhGia == 3.5 || item.DanhGia == 4.5)
-											            {
-																	<a href="#"><span class="ion-ios-star-half"></span></a>
-												            star = star + 1;
-											            }
-											            for (var i = star; i < 5; i++)
-											            {
-																	<a href="#"><span class="ion-ios-star-outline"></span></a>
-											            }
-										            }
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <h3><a href="#">@item.TenGiay</a></h3>
-                                        <div class="pricing">
-                                        <p class="price"><del>$@item.GiaGoc.Value.ToString("#,##0") </del><span>$@item.GiaBan.Value.ToString("#,##0")</span></p>
-                                        </div>
-                                        <p class="bottom-area d-flex px-3">
-                                            <a href="#" class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
-                                            <a href="#" class="buy-now text-center py-2">Buy now<span><i class="ion-ios-cart ml-1"></i></span></a>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-
-		    		</div>
-		    		<div class="row mt-5">
-		          <div class="col">
-		            <div class="block-27 d-flex justify-content-center">
-                            @Html.PagedListPager(Model,page=>Url.Action("Shop", new{page=page}))
-		            </div>
-		          </div>
-		        </div>
-		    	</div>
+				@await Html.PartialAsync("_ShoesFiltered", Model)
 
 		    	<div class="col-md-4 col-lg-2">
-					
 					<div class="sidebar" style="padding-bottom:25px;">
 						<h2 style="font-size: 1.4rem;line-height: 1.5;font-weight: 400;color: #000000;">SEARCHING</h2>
 						<div class="input-group" style="margin-bottom:5px;">
 							<div id="search-autocomplete" class="form-outline">
-								<input type="search" id="form1" class="form-control" placeholder="Keyword"/>
+								<input type="search" id="searchkeyword" class="form-control" placeholder="Keyword"/>
 							</div>
 
 						</div>
@@ -95,20 +39,20 @@
 
 				<div class="sidebar-box-2" style="padding-bottom:60px;">
 					<div class="input-group">
-						<input type="number" min="0" class="form-control" aria-label="Amount (to the nearest dollar)" placeholder="Start price">
+						<input type="number" min="0" class="form-control" aria-label="Amount (to the nearest dollar)" placeholder="Start price" id="startprice">
 						<div class="input-group-append">
 								<span class="input-group-text">$</span>
 							</div>
 						</div>
 						<br/>
 						<div class="input-group" style="margin-bottom: 25px;">
-						<input type="number" min="0" class="form-control" aria-label="Amount (to the nearest dollar)" placeholder="Limit price">
+						<input type="number" min="0" class="form-control" aria-label="Amount (to the nearest dollar)" placeholder="Limit price" id="limitprice">
 							<div class="input-group-append">
 								<span class="input-group-text">$</span>
 							</div>
 						</div>
 
-						<button type="button" class="btn btn-primary float-right">Search</button>
+					<button type="button" class="btn btn-primary float-right" onclick="ShoesFilter()">Search</button>
 					</div>
 
 					<div class="sidebar">
@@ -119,3 +63,57 @@
     	</div>
     </section>
 @await Html.PartialAsync("_PartialGallery")
+
+<script>
+	var keyword;
+	var startPrice;
+	var limitPrice;
+	var selectedOccasions;
+
+	//send ajax
+	//$.ajax({
+	//	url: '@Url.Action("GetShoesByFilter", "Home")',
+	//	type: 'POST',
+	//	data: {
+	//		keyword: keyword,
+	//		startPrice: startPrice,
+	//		limitPrice: limitPrice,
+	//		occasionCheckboxes: selectedOccasions,
+	//	}
+	//})
+	//	.done(function (response) {
+	//		console.log(response);
+	//		$('#productSearch').html(response);
+	//	})
+	//	.fail(function (XMLHttpRequest, textStatus, errorThown) {
+	//		alert("Fail");
+	//	});
+	//		}
+
+		var ShoesFilter = function(){
+		keyword = $("#searchkeyword").val();
+		startPrice = $("#startprice").val();
+		limitPrice = $("#limitprice").val();
+		selectedOccasions = $('input[type="checkbox"][name="occasion"]:checked').map(function () {
+			return $(this).val();
+		}).get();
+		//send ajax
+		$.ajax({
+			url: '@Url.Action("GetShoesByFilter", "Home")',
+			type: 'POST',
+			data:{
+				keyword: keyword,
+				startPrice: startPrice,
+				limitPrice: limitPrice,
+				occasionCheckboxes: selectedOccasions,
+			}
+		})
+			.done(function(response){
+				console.log(response);
+				$('#productSearch').html(response);
+			})
+			.fail(function(XMLHttpRequest, textStatus, errorThown){
+				alert("Fail");
+			});			
+		}
+</script>

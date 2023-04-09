@@ -45,18 +45,90 @@ namespace ShoesStore.Controllers
             return View(lstShoesDTO);
         }
 
-        public IActionResult Shop(int page = 1)
+        
+        public IActionResult Shop(string? keyword, int? startPrice, int? limitPrice, List<string>? occasionCheckboxes, int page = 1)
         {
             int pageNumber = page;
             int pageSize = 3;
+            var lstGiay = db.Giays.GroupBy(x => x.TenGiay)
+            .Select(group => group.First())
+            .ToList();
+            var lstShoesDTO = GetListProduct(lstGiay);
 
+            var temp = lstShoesDTO;
+
+            if (occasionCheckboxes.Count > 0)
+            {
+                lstShoesDTO = lstShoesDTO.Where(x => occasionCheckboxes.Any(occasion => x.TenLoai.Contains(occasion))).ToList();
+            }
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                lstShoesDTO = lstShoesDTO.Where(x => x.TenGiay.ToLower().Contains(keyword.ToLower())).ToList();
+            }
+            if (startPrice.HasValue)
+            {
+                lstShoesDTO = lstShoesDTO.Where(x => x.GiaBan >= startPrice).ToList();
+            }
+            if (limitPrice.HasValue)
+            {
+                lstShoesDTO = lstShoesDTO.Where(x => x.GiaBan <= limitPrice).ToList();
+            }
+
+            ViewBag.pageSize = pageSize;
+            ViewBag.keyword = keyword;
+            ViewBag.startPrice = startPrice;
+            ViewBag.limitPrice = limitPrice;
+            ViewBag.occasionCheckboxes = occasionCheckboxes;
+
+            PagedList<GiayDTO> lst = new PagedList<GiayDTO>(lstShoesDTO, pageNumber, pageSize);
+
+            return View(lst);
+        }
+
+        [HttpPost]
+        public IActionResult GetShoesByFilter(string? keyword, int? startPrice, int? limitPrice, List<string>? occasionCheckboxes, int page = 1)
+        {
+            int pageNumber = page;
+            int pageSize = 3;
             var lstGiay = db.Giays.GroupBy(x => x.TenGiay)
                         .Select(group => group.First())
                         .ToList();
+            var lstShoesDTO = GetListProduct(lstGiay);
 
+            var temp = lstShoesDTO;
+
+            if (occasionCheckboxes.Count > 0)
+            {
+                lstShoesDTO = lstShoesDTO.Where(x => occasionCheckboxes.Any(occasion => x.TenLoai.Contains(occasion))).ToList();
+            }
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                lstShoesDTO = lstShoesDTO.Where(x => x.TenGiay.ToLower().Contains(keyword.ToLower())).ToList();
+            }
+            if (startPrice.HasValue)
+            {
+                lstShoesDTO = lstShoesDTO.Where(x => x.GiaBan >= startPrice).ToList();
+            }
+            if (limitPrice.HasValue)
+            {
+                lstShoesDTO = lstShoesDTO.Where(x => x.GiaBan <= limitPrice).ToList();
+            }
+            
+            ViewBag.pageSize = pageSize;
+            ViewBag.keyword = keyword;
+            ViewBag.startPrice = startPrice;
+            ViewBag.limitPrice = limitPrice;
+            ViewBag.occasionCheckboxes = occasionCheckboxes;
+
+            PagedList<GiayDTO> lst = new PagedList<GiayDTO>(lstShoesDTO, pageNumber, pageSize);
+            return PartialView("_ShoesFiltered", lst);
+        }
+
+        private List<GiayDTO> GetListProduct(List<Giay> lstShoes)
+        {
             List<GiayDTO> lstShoesDTO = new List<GiayDTO>();
 
-            foreach (var item in lstGiay)
+            foreach (var item in lstShoes)
             {
                 GiayDTO temp = new GiayDTO
                 {
@@ -74,11 +146,9 @@ namespace ShoesStore.Controllers
                 };
                 lstShoesDTO.Add(temp);
             }
-
-            PagedList<GiayDTO> lstShoesDTOPaging = new PagedList<GiayDTO>(lstShoesDTO, pageNumber, pageSize);
-
-            return View(lstShoesDTOPaging);
+            return lstShoesDTO;
         }
+
         public IActionResult Single()
         {
             return View();
