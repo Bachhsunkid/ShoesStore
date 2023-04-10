@@ -3,6 +3,7 @@ using ShoesStore.Models;
 using ShoesStore.ViewModels;
 using System.Diagnostics;
 using System.Linq;
+using WebN02.Models.Authentication;
 using X.PagedList;
 
 namespace ShoesStore.Controllers
@@ -186,6 +187,8 @@ namespace ShoesStore.Controllers
         {
             return View();
         }
+
+        [Authentication]
         public IActionResult Checkout()
         {
             return View();

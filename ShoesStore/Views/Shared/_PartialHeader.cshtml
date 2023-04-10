@@ -1,4 +1,6 @@
-﻿<div class="py-1 bg-black">
+﻿@using ShoesStore.Models.ModelDTOs
+
+<div class="py-1 bg-black">
 	<div class="container">
 		<div class="row no-gutters d-flex align-items-start align-items-center px-md-0">
 			<div class="col-lg-12 d-block">
@@ -39,9 +41,18 @@
 					</div>
 				</li>
 				<li class="nav-item"><a asp-action="About" asp-controller="Home" class="nav-link">About</a></li>
-				<li class="nav-item"><a asp-action="Blog" asp-controller="Home" class="nav-link">Blog</a></li>
 				<li class="nav-item"><a asp-action="Contact" asp-controller="Home" class="nav-link">Contact</a></li>
 				<li class="nav-item cta cta-colored"><a asp-action="Cart" asp-controller="Home" class="nav-link"><span class="icon-shopping_cart"></span>[0]</a></li>
+				@{
+					if (UserContext.IsLogin == true)
+					{
+						<li class="nav-item"><a asp-action="Logout" asp-controller="Access" class="nav-link">Logout</a></li>
+					}
+					else
+					{
+						<li class="nav-item"><a asp-action="Login" asp-controller="Access" class="nav-link">Login</a></li>
+					}
+				}
 
 			</ul>
 		</div>
