@@ -70,50 +70,52 @@
 	var limitPrice;
 	var selectedOccasions;
 
+	var ShoesFilter = function(){
+	keyword = $("#searchkeyword").val();
+	startPrice = $("#startprice").val();
+	limitPrice = $("#limitprice").val();
+	selectedOccasions = $('input[type="checkbox"][name="occasion"]:checked').map(function () {
+		return $(this).val();
+	}).get();
 	//send ajax
-	//$.ajax({
-	//	url: '@Url.Action("GetShoesByFilter", "Home")',
-	//	type: 'POST',
-	//	data: {
-	//		keyword: keyword,
-	//		startPrice: startPrice,
-	//		limitPrice: limitPrice,
-	//		occasionCheckboxes: selectedOccasions,
-	//	}
-	//})
-	//	.done(function (response) {
-	//		console.log(response);
-	//		$('#productSearch').html(response);
-	//	})
-	//	.fail(function (XMLHttpRequest, textStatus, errorThown) {
-	//		alert("Fail");
-	//	});
-	//		}
-
-		var ShoesFilter = function(){
-		keyword = $("#searchkeyword").val();
-		startPrice = $("#startprice").val();
-		limitPrice = $("#limitprice").val();
-		selectedOccasions = $('input[type="checkbox"][name="occasion"]:checked').map(function () {
-			return $(this).val();
-		}).get();
-		//send ajax
-		$.ajax({
-			url: '@Url.Action("GetShoesByFilter", "Home")',
-			type: 'POST',
-			data:{
-				keyword: keyword,
-				startPrice: startPrice,
-				limitPrice: limitPrice,
-				occasionCheckboxes: selectedOccasions,
-			}
-		})
-			.done(function(response){
-				console.log(response);
-				$('#productSearch').html(response);
-			})
-			.fail(function(XMLHttpRequest, textStatus, errorThown){
-				alert("Fail");
-			});			
+	$.ajax({
+		url: '@Url.Action("GetShoesByFilter", "Home")',
+		type: 'POST',
+		data:{
+			keyword: keyword,
+			startPrice: startPrice,
+			limitPrice: limitPrice,
+			occasionCheckboxes: selectedOccasions,
 		}
+	})
+		.done(function(response){
+			console.log(response);
+			$('#productSearch').html(response);
+		})
+		.fail(function(XMLHttpRequest, textStatus, errorThown){
+			alert("Fail");
+		});			
+	}
+
+	function AddToCart(cartID, shoeID) {
+
+		console.log(cartID);
+		console.log(shoeID);
+
+		$.ajax({
+			url: '@Url.Action("AddToCart", "Home")',
+			method: 'POST',
+			data: {
+				maGioHang: cartID,
+				maGiay: shoeID,
+				soLuong: 1
+			},
+			success: function () {
+				alert("Done");
+			},
+			error: function () {
+				alert('Error');
+			}
+		});
+	}
 </script>

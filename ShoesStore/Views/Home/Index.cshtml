@@ -1,4 +1,5 @@
 ﻿@using ShoesStore.ViewModels
+@using ShoesStore.Models.ModelDTOs
 @{
     ViewData["Title"] = "Home Page";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -120,17 +121,17 @@
                                             double star = 0;
                                             for (var i = 1; i <= item.DanhGia; i++)
                                             {
-                                                <a href="#"><span class="ion-ios-star"></span></a>
+                                                    <a href="#"><span class="ion-ios-star"></span></a>
                                                 star++;
                                             }
                                             if (item.DanhGia == 0.5 || item.DanhGia == 1.5 || item.DanhGia == 2.5 || item.DanhGia == 3.5 || item.DanhGia == 4.5)
                                             {
-                                                <a href="#"><span class="ion-ios-star-half"></span></a>
+                                                    <a href="#"><span class="ion-ios-star-half"></span></a>
                                                 star = star + 1;
                                             }
                                             for (var i = star; i < 5; i++)
                                             {
-                                                <a href="#"><span class="ion-ios-star-outline"></span></a>
+                                                    <a href="#"><span class="ion-ios-star-outline"></span></a>
                                             }
                                         }
                                     </p>
@@ -141,7 +142,7 @@
                                 <p class="price"><del>$@item.GiaGoc.Value.ToString("#,##0") </del><span>$@item.GiaBan.Value.ToString("#,##0")</span></p>
                             </div>
                             <p class="bottom-area d-flex px-3">
-                                <a href="#" class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
+                                <a href="#" class="add-to-cart text-center py-2 mr-1" onclick="AddToCart('@UserContext.MaGioHang', '@item.MaGiay')"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
                                 <a href="#" class="buy-now text-center py-2">Buy now<span><i class="ion-ios-cart ml-1"></i></span></a>
                             </p>
                         </div>
@@ -369,3 +370,27 @@
     </section>
 
 @await Html.PartialAsync("_PartialGallery")
+
+<script>
+    function AddToCart(cartID, shoeID) {
+
+        console.log(cartID);
+        console.log(shoeID);
+
+        $.ajax({
+            url: '@Url.Action("AddToCart", "Home")',
+            method: 'POST',
+            data: {
+                maGioHang: cartID,
+                maGiay: shoeID,
+                soLuong: 1
+            },
+            success: function () {
+                alert("Done");
+            },
+            error: function () {
+                alert('Error');
+            }
+        });
+    }
+</script>

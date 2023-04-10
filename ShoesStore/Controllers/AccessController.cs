@@ -28,6 +28,19 @@ namespace ShoesStore.Controllers
                 if (obj != null)
                 {
                     UserContext.IsLogin = true;
+                    UserContext.TaiKhoan = obj.TaiKhoan;
+                    var query1 = from Tuser in db.Tusers
+                                 join KhachHang in db.KhachHangs
+                                 on UserContext.TaiKhoan equals KhachHang.TaiKhoan
+                                 select KhachHang.MaKh;
+                    UserContext.MaKH = query1.ToList().ElementAt(0);
+
+                    var query2 = from KhachHang in db.KhachHangs
+                                 join GioHang in db.GioHangs
+                                 on UserContext.MaKH equals GioHang.MaKh
+                                 select GioHang.MaGioHang;
+                    UserContext.MaGioHang = query2.ToList().ElementAt(0);
+
                     HttpContext.Session.SetString("TaiKhoan", obj.TaiKhoan.ToString());
                     return RedirectToAction("Index", "Home");
                 }
@@ -47,6 +60,9 @@ namespace ShoesStore.Controllers
             HttpContext.Session.Clear();
             HttpContext.Session.Remove("TaiKhoan");
             UserContext.IsLogin = false;
+            UserContext.TaiKhoan = "";
+            UserContext.MaKH = "";
+            UserContext.MaGioHang = "";
             return RedirectToAction("Login", "Access");
         }
     }

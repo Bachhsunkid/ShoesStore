@@ -202,6 +202,30 @@ namespace ShoesStore.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        public IActionResult AddToCart(string maGioHang, string maGiay, int soLuong = 1)
+        {
+            var item = db.ChiTietGioHangs.FirstOrDefault(x => x.MaGioHang == maGioHang && x.MaGiay == maGiay);
+
+            if (item != null)
+            {
+                item.SoLuong += soLuong;
+                db.ChiTietGioHangs.Update(item);
+            }
+            else
+            {
+                ChiTietGioHang chiTietGioHang = new ChiTietGioHang()
+                {
+                    MaGioHang = maGioHang,
+                    MaGiay = maGiay,
+                    SoLuong = soLuong
+                };
+                db.ChiTietGioHangs.Add(chiTietGioHang);
+            }
+            db.SaveChanges();
+            return Ok();
+        }
         //public IActionResult Blog()
         //{
         //    return View();
