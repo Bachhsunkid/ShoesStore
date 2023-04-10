@@ -13,6 +13,7 @@
         public string? MauSac { get; set; }
 
         public int? SoLuong { get; set; }
+
         public decimal? GiaGoc { get; set; }
 
         public decimal? GiaBan { get; set; }

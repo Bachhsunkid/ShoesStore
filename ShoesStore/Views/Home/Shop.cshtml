@@ -98,9 +98,10 @@
 	}
 
 	function AddToCart(cartID, shoeID) {
-
-		console.log(cartID);
-		console.log(shoeID);
+		if (cartID == null || cartID === undefined || cartID == "") {
+			alert('Đăng nhập trước khi thêm vào giỏ hàng');
+			return;
+		}
 
 		$.ajax({
 			url: '@Url.Action("AddToCart", "Home")',
@@ -114,7 +115,7 @@
 				alert("Done");
 			},
 			error: function () {
-				alert('Error');
+				alert('Đăng nhập trước khi thêm vào giỏ hàng');
 			}
 		});
 	}

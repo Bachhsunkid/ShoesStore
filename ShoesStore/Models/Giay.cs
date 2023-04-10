@@ -25,7 +25,7 @@ public partial class Giay
 
     public double? PhanTramGiam { get; set; }
 
-    public string? TinhTrang { get; set; }
+    public byte? TinhTrang { get; set; }
 
     public double? DanhGia { get; set; }
 

@@ -1,5 +1,5 @@
 ﻿@using ShoesStore.ViewModels
-
+@using ShoesStore.Models.ModelDTOs
 @{
     ViewData["Title"] = "Single";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -31,17 +31,17 @@
 									double star = 0;
 									for (var i = 1; i <= Model[0].DanhGia; i++)
 									{
-														<a href="#"><span class="ion-ios-star"></span></a>
+																<a href="#"><span class="ion-ios-star"></span></a>
 										star++;
 									}
 									if (Model[0].DanhGia == 0.5 || Model[0].DanhGia == 1.5 || Model[0].DanhGia == 2.5 || Model[0].DanhGia == 3.5 || Model[0].DanhGia == 4.5)
 									{
-														<a href="#"><span class="ion-ios-star-half"></span></a>
+																<a href="#"><span class="ion-ios-star-half"></span></a>
 										star = star + 1;
 									}
 									for (var i = star; i < 5; i++)
 									{
-														<a href="#"><span class="ion-ios-star-outline"></span></a>
+																<a href="#"><span class="ion-ios-star-outline"></span></a>
 									}
 								}
 							</p>
@@ -84,7 +84,7 @@
 									<p id="shoesavailable" style="color: #000;">@Model[0].SoLuong piece available</p>
 								</div>
 						</div>
-          			<p><a href="#" class="btn btn-black py-3 px-5 mr-2" onclick="AddToCart()">Add to Cart</a><a href="cart.html" class="btn btn-primary py-3 px-5">Buy now</a></p>
+          			<p><a href="#" class="btn btn-black py-3 px-5 mr-2" onclick="AddShoesToCart()">Add to Cart</a><a href="cart.html" class="btn btn-primary py-3 px-5">Buy now</a></p>
     			</div>
     		</div>
 
@@ -271,7 +271,40 @@
 		});
 	}
 
-	function AddToCart(){
+	function AddShoesToCart(){
+		var cartID = '@UserContext.MaGioHang';
+		var shoeID = $('#shoesSelect').val();
+		var quantity = $('#singlequantity').val();
 
+		console.log(cartID);
+		console.log(shoeID);
+		console.log(quantity);
+
+		if (cartID == null || cartID === undefined || cartID == "") {
+			alert('Đăng nhập trước khi thêm vào giỏ hàng');
+			window.location.href = 'https://localhost:7294/Access/Login';
+			return;
+		}
+
+		if (quantity == null || quantity === undefined || quantity == "") {
+			alert('Số lượng phải lớn hơn 0');
+			return;
+		}
+
+		$.ajax({
+			url: '@Url.Action("AddToCart", "Home")',
+			method: 'POST',
+			data: {
+				maGioHang: cartID,
+				maGiay: shoeID,
+				soLuong: quantity
+			},
+			success: function () {
+				alert("Done");
+			},
+			error: function () {
+				alert('Đăng nhập trước khi thêm vào giỏ hàng');
+			}
+		});
 	}
 </script>
