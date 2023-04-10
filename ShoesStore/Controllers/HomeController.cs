@@ -2,6 +2,7 @@
 using ShoesStore.Models;
 using ShoesStore.ViewModels;
 using System.Diagnostics;
+using System.Linq;
 using X.PagedList;
 
 namespace ShoesStore.Controllers
@@ -45,7 +46,6 @@ namespace ShoesStore.Controllers
             return View(lstShoesDTO);
         }
 
-        
         public IActionResult Shop(string? keyword, int? startPrice, int? limitPrice, List<string>? occasionCheckboxes, int page = 1)
         {
             int pageNumber = page;
@@ -130,29 +130,58 @@ namespace ShoesStore.Controllers
 
             foreach (var item in lstShoes)
             {
-                GiayDTO temp = new GiayDTO
-                {
-                    MaGiay = item.MaGiay,
-                    TenLoai = db.LoaiGiays.Find(item.MaLoai).TenLoai,
-                    TenGiay = item.TenGiay,
-                    KichCo = item.KichCo,
-                    MauSac = item.MauSac,
-                    GiaGoc = item.GiaGoc,
-                    GiaBan = item.GiaBan,
-                    PhanTramGiam = item.PhanTramGiam,
-                    DanhGia = item.DanhGia,
-                    AnhDaiDien = item.AnhDaiDien,
-                    SoLuong = item.SoLuong
-                };
+                GiayDTO temp = GiayToGiayDTO(item);
                 lstShoesDTO.Add(temp);
             }
             return lstShoesDTO;
         }
 
-        public IActionResult Single()
+        public IActionResult Single(string tenGiay)
         {
-            return View();
+            var giays = db.Giays.Where(x=>x.TenGiay == tenGiay).OrderBy(x=>x.MaGiay);
+            if (giays == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            List<GiayDTO> lstShoesDTO = new List<GiayDTO>();
+            foreach (var item in giays)
+            {
+                GiayDTO temp = GiayToGiayDTO(item);
+                lstShoesDTO.Add(temp);
+            }
+
+            return View(lstShoesDTO);
         }
+
+        [HttpGet]
+        public ActionResult GetShoesByID(string maGiay)
+        {
+            return Json(db.Giays.Find(maGiay));
+        }
+
+        private GiayDTO GiayToGiayDTO(Giay giay)
+        {
+            GiayDTO temp = new GiayDTO();
+            using( var context = new Qlbangiaynhom7Context())
+            {
+
+                temp.MaGiay = giay.MaGiay;
+                temp.TenLoai = context.LoaiGiays.First(x => x.MaLoai == giay.MaLoai).TenLoai;
+                temp.TenGiay = giay.TenGiay;
+                temp.KichCo = giay.KichCo;
+                temp.MauSac = giay.MauSac;
+                temp.GiaGoc = giay.GiaGoc;
+                temp.GiaBan = giay.GiaBan;
+                temp.PhanTramGiam = giay.PhanTramGiam;
+                temp.DanhGia = giay.DanhGia;
+                temp.AnhDaiDien = giay.AnhDaiDien;
+                temp.SoLuong = giay.SoLuong;
+            }
+            return temp;
+        }
+
+
         public IActionResult Cart()
         {
             return View();
