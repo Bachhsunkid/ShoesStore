@@ -104,7 +104,7 @@
             {
                 <div class="col-sm-12 col-md-6 col-lg-3 ftco-animate d-flex fadeInUp ftco-animated">
                     <div class="product d-flex flex-column">
-                        <a href="#" class="img-prod">
+                        <a asp-action="Single" asp-controller="Home" asp-route-tenGiay="@item.TenGiay" class="img-prod">
                             <img class="img-fluid" src="@Url.Content("../images/"+item.AnhDaiDien)" alt="Colorlib Template">
                             <span class="status">@item.PhanTramGiam% Off</span>
                             <div class="overlay"></div>
@@ -136,7 +136,7 @@
                                     </p>
                                 </div>
                             </div>
-                            <h3><a href="#">Nike Free RN 2019 iD</a></h3>
+                            <h3><a asp-action="Single" asp-controller="Home" asp-route-tenGiay="@item.TenGiay">@item.TenGiay</a></h3>
                             <div class="pricing">
                                 <p class="price"><del>$@item.GiaGoc.Value.ToString("#,##0") </del><span>$@item.GiaBan.Value.ToString("#,##0")</span></p>
                             </div>
