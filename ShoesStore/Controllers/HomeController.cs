@@ -3,6 +3,7 @@ using ShoesStore.Models;
 using ShoesStore.Models.ModelDTOs;
 using ShoesStore.ViewModels;
 using System.Diagnostics;
+using System.Drawing.Printing;
 using System.Linq;
 using WebN02.Models.Authentication;
 using X.PagedList;
@@ -19,6 +20,10 @@ namespace ShoesStore.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Lấy và gửi giũ liệu sang trang Index
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
             var lstGiay = db.Giays.GroupBy(x => x.TenGiay)
@@ -48,6 +53,15 @@ namespace ShoesStore.Controllers
             return View(lstShoesDTO);
         }
 
+        /// <summary>
+        /// Phân trang và lọc nhiều điều kiện. Thực hiện hàm này khi nhấn paging
+        /// </summary>
+        /// <param name="keyword"></param>
+        /// <param name="startPrice"></param>
+        /// <param name="limitPrice"></param>
+        /// <param name="occasionCheckboxes"></param>
+        /// <param name="page"></param>
+        /// <returns></returns>
         public IActionResult Shop(string? keyword, int? startPrice, int? limitPrice, List<string>? occasionCheckboxes, int page = 1)
         {
             int pageNumber = page;
@@ -87,6 +101,15 @@ namespace ShoesStore.Controllers
             return View(lst);
         }
 
+        /// <summary>
+        /// API Phân trang và lọc theo nhiều điều kiện
+        /// </summary>
+        /// <param name="keyword"></param>
+        /// <param name="startPrice"></param>
+        /// <param name="limitPrice"></param>
+        /// <param name="occasionCheckboxes"></param>
+        /// <param name="page"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult GetShoesByFilter(string? keyword, int? startPrice, int? limitPrice, List<string>? occasionCheckboxes, int page = 1)
         {
@@ -126,6 +149,11 @@ namespace ShoesStore.Controllers
             return PartialView("_ShoesFiltered", lst);
         }
 
+        /// <summary>
+        /// Chuyển từ kiểu List<Giay> sang  List<GiayDTO>
+        /// </summary>
+        /// <param name="lstShoes">Danh sách Giay</param>
+        /// <returns>1 danh sách GiayDTO</returns>
         private List<GiayDTO> GetListProduct(List<Giay> lstShoes)
         {
             List<GiayDTO> lstShoesDTO = new List<GiayDTO>();
@@ -138,6 +166,11 @@ namespace ShoesStore.Controllers
             return lstShoesDTO;
         }
 
+        /// <summary>
+        /// Chuyển dữ liệu 1 chiếc giày sang trang detail giày
+        /// </summary>
+        /// <param name="tenGiay"></param>
+        /// <returns></returns>
         public IActionResult Single(string tenGiay)
         {
             var giays = db.Giays.Where(x=>x.TenGiay == tenGiay).OrderBy(x=>x.MaGiay);
@@ -156,12 +189,21 @@ namespace ShoesStore.Controllers
             return View(lstShoesDTO);
         }
 
+        /// <summary>
+        /// Lấy thông tin giày theo mã
+        /// </summary>
+        /// <param name="maGiay"></param>
+        /// <returns>dữ liệu giày dưới dạng JSON</returns>
         [HttpGet]
         public ActionResult GetShoesByID(string maGiay)
         {
             return Json(db.Giays.Find(maGiay));
         }
-
+        /// <summary>
+        /// Chuyển 1 đối tượng Giay sang GiayDTO
+        /// </summary>
+        /// <param name="giay"></param>
+        /// <returns></returns>
         private GiayDTO GiayToGiayDTO(Giay giay)
         {
             GiayDTO temp = new GiayDTO();
@@ -183,13 +225,31 @@ namespace ShoesStore.Controllers
             return temp;
         }
 
-
+        /// <summary>
+        /// lấy dữ liệu và gửi cho trang Cart
+        /// </summary>
+        /// <param name="page"></param>
+        /// <returns></returns>
+        //[Authentication]
         public IActionResult Cart()
         {
-            return View();
+            List<ChiTietGioHangGiayModel> lstShoesInCart = new List<ChiTietGioHangGiayModel>();
+            var giaycart = db.ChiTietGioHangs.Where(x => x.MaGioHang == UserContext.MaGioHang).ToList();
+
+            foreach(var item in giaycart)
+            {
+                lstShoesInCart.Add(new ChiTietGioHangGiayModel()
+                {
+                    ChiTietGioHang = item,
+                    Giay = db.Giays.Find(item.MaGiay)
+                }); 
+                  
+            }
+            
+            return View(lstShoesInCart);
         }
 
-        [Authentication]
+        //[Authentication]
         public IActionResult Checkout()
         {
             return View();
@@ -204,6 +264,13 @@ namespace ShoesStore.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Thêm sản phầm vào giỏ hàng
+        /// </summary>
+        /// <param name="maGioHang"></param>
+        /// <param name="maGiay"></param>
+        /// <param name="soLuong"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult AddToCart(string maGioHang, string maGiay, int soLuong = 1)
         {

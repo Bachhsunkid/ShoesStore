@@ -12,7 +12,11 @@ namespace ShoesStore.Controllers
     {
         Qlbangiaynhom7Context db = new Qlbangiaynhom7Context();
 
-        
+        //[HttpGet]
+        //public ActionResult GetChiTietGioHang(string maGioHay)
+        //{
+
+        //}
 
     }
 }
