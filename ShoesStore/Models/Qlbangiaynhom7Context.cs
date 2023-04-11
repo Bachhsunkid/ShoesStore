@@ -133,7 +133,7 @@ public partial class Qlbangiaynhom7Context : DbContext
             entity.Property(e => e.MaLoai).HasMaxLength(20);
             entity.Property(e => e.MauSac).HasMaxLength(50);
             entity.Property(e => e.TenGiay).HasMaxLength(100);
-            entity.Property(e => e.TinhTrang).HasMaxLength(25);
+            //entity.Property(e => e.TinhTrang).HasMaxLength(25);
 
             entity.HasOne(d => d.MaLoaiNavigation).WithMany(p => p.Giays)
                 .HasForeignKey(d => d.MaLoai)
