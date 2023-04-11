@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShoesStore.Models;
+using ShoesStore.Models.ModelDTOs;
 using ShoesStore.ViewModels;
 using System.Diagnostics;
 using System.Linq;
@@ -203,7 +204,6 @@ namespace ShoesStore.Controllers
             return View();
         }
 
-        [Authentication]
         [HttpPost]
         public IActionResult AddToCart(string maGioHang, string maGiay, int soLuong = 1)
         {
@@ -231,6 +231,7 @@ namespace ShoesStore.Controllers
                     };
                     db.ChiTietGioHangs.Add(chiTietGioHang);
                 }
+                UserContext.SoSanPham += soLuong;
                 db.SaveChanges();
                 return Ok();
             }

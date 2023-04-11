@@ -49,6 +49,7 @@ namespace ShoesStore.Controllers
                                      on UserContext.MaKH equals GioHang.MaKh
                                      select GioHang.MaGioHang;
                         UserContext.MaGioHang = query2.ToList().ElementAt(0);
+                        UserContext.SoSanPham = (int)db.ChiTietGioHangs.Where(c => c.MaGioHang == UserContext.MaGioHang).Sum(c => c.SoLuong);
                         return RedirectToAction("Index", "Home");
                     }
 

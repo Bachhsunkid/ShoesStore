@@ -42,7 +42,7 @@
 				</li>
 				<li class="nav-item"><a asp-action="About" asp-controller="Home" class="nav-link">About</a></li>
 				<li class="nav-item"><a asp-action="Contact" asp-controller="Home" class="nav-link">Contact</a></li>
-				<li class="nav-item cta cta-colored"><a asp-action="Cart" asp-controller="Home" class="nav-link"><span class="icon-shopping_cart"></span>[0]</a></li>
+				<li class="nav-item cta cta-colored"><a asp-action="Cart" asp-controller="Home" class="nav-link"><span class="icon-shopping_cart"></span>[@UserContext.SoSanPham]</a></li>
 				@{
 					if (UserContext.IsLogin == true)
 					{

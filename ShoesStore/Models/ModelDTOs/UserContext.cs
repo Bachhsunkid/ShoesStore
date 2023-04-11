@@ -8,6 +8,8 @@
 
         public static string MaGioHang { get; set; }
 
+        public static int SoSanPham { get; set; }
+
         public static bool IsLogin { get; set; }
     }
 }
