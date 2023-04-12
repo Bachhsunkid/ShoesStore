@@ -24,20 +24,28 @@ namespace ShoesStore.Areas.Admin.Controllers
         }
 		[Route("")]
         [Route("Index")]
-		public IActionResult Index(int year)
+		public IActionResult Index()
 		{
-            //int year = 2023;
             AdminContext.SoTienBan30NgayGanNhat = db.ProcTienBan30Ngays.FromSql($"Exec TongTienBan30Ngay").ToList().ElementAt(0);
             AdminContext.SoTienNhap30NgayGanNhat = db.ProcTienNhap30Ngays.FromSql($"Exec TongTienNhap30Ngay").ToList().ElementAt(0);
             AdminContext.SoHDB30NgayGanNhat = db.ProcTongHDB30Ngays.FromSql($"Exec TongHDB30Ngay").ToList().ElementAt(0);
-            AdminContext.SoTienBanTrongNam = db.Set<ProcTongTienBanHangThang>().FromSqlRaw("EXEC TongTienBanHangThang {0}", year).ToList();
-
+            AdminContext.SoTienBanTrongNam = db.Set<ProcTongTienBanHangThang>().FromSqlRaw("EXEC TongTienBanHangThang {0}", 2023).ToList();
 
             var lstNhanVien = db.NhanViens.OrderBy(x => x.MaNv).ToList();
 			return View(lstNhanVien);
 		}
 
-		[Route("Products")]
+        [HttpPost]
+        public IActionResult GetChartData(int year)
+        {
+            var chartData = db.Set<ProcTongTienBanHangThang>().FromSqlRaw("EXEC TongTienBanHangThang {0}", year).ToList();
+            AdminContext.SoTienBanTrongNam = chartData;
+
+            return PartialView("_IndexChart", chartData);
+        }
+
+
+        [Route("Products")]
         public IActionResult Products()
         {
             var lstGiay = db.Giays.OrderBy(x => x.MaGiay).ToList();

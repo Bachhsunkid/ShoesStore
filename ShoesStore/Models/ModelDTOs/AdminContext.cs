@@ -12,6 +12,6 @@ namespace ShoesStore.Models.ModelDTOs
 
         public static List<ProcTongTienBanHangThang> SoTienBanTrongNam { get; set; }
 
-		
-	}
+
+    }
 }
