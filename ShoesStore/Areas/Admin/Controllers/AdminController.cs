@@ -12,7 +12,7 @@ namespace ShoesStore.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Route("Admin")]
-    [Route("")]
+    //[Route("")]
     public class AdminController : Controller
     {
         Qlbangiaynhom7Context db = new Qlbangiaynhom7Context();

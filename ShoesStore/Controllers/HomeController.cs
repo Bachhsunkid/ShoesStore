@@ -239,40 +239,42 @@ namespace ShoesStore.Controllers
             return View();
         }
 
+        [HttpPost]
         public IActionResult PlaceAnOrder(string fullName, string phoneNumber, string address)
         {
             //Cập nhật thông tin khách hàng
             var customer = db.KhachHangs.Find(UserContext.MaKH);
-            customer.TenKh = fullName;
-            customer.SoDienThoai = phoneNumber;
-            customer.DiaChi = address;
-
-            db.KhachHangs.Update(customer);
-            db.SaveChanges();
-
-            //Tạo hóa đơn bán
-            string maHDB = db.Set<ProcPlaceAnOrder>().FromSqlRaw("EXEC proc_HoaDonBan_PlaceAnOrder {0}", UserContext.MaKH)
-                                      .ToList().ElementAt(0).ID;
-
-            //chuyển dữ liệu từ giỏ hàng sang hóa đơn bán
-            List<ChiTietGioHangGiayModel> lstShoesInCart = new List<ChiTietGioHangGiayModel>();
-            var giaycart = db.ChiTietGioHangs.Where(x => x.MaGioHang == UserContext.MaGioHang).ToList();
-
-            foreach (var item in giaycart)
+            if(customer != null)
             {
-                db.ChiTietHdbs.Add(new ChiTietHdb
-                {
-                    MaHdb = maHDB,
-                    MaGiay = db.Giays.Find(item.MaGiay).MaGiay,
-                    SoLuong = item.SoLuong,
-                    KhuyenMai = 0
-                });
+                customer.TenKh = fullName;
+                customer.SoDienThoai = phoneNumber;
+                customer.DiaChi = address;
+                db.KhachHangs.Update(customer);
                 db.SaveChanges();
+
+                //Tạo hóa đơn bán
+                string maHDB = db.Set<ProcPlaceAnOrder>().FromSqlRaw("EXEC proc_HoaDonBan_PlaceAnOrder {0}", UserContext.MaKH)
+                                          .ToList().ElementAt(0).ID;
+
+                //chuyển dữ liệu từ giỏ hàng sang hóa đơn bán
+                List<ChiTietGioHangGiayModel> lstShoesInCart = new List<ChiTietGioHangGiayModel>();
+                var giaycart = db.ChiTietGioHangs.Where(x => x.MaGioHang == UserContext.MaGioHang).ToList();
+
+                foreach (var item in giaycart)
+                {
+                    db.ChiTietHdbs.Add(new ChiTietHdb
+                    {
+                        MaHdb = maHDB,
+                        MaGiay = db.Giays.Find(item.MaGiay).MaGiay,
+                        SoLuong = item.SoLuong,
+                        KhuyenMai = 0
+                    });
+                    db.SaveChanges();
+                }
+
+                //Clear gio hang
+                db.Database.ExecuteSqlRaw($"DELETE FROM chitietgiohang WHERE MaGioHang = '{UserContext.MaGioHang}'");
             }
-
-            //Clear gio hang
-            db.Database.ExecuteSqlRaw($"DELETE FROM GioHang WHERE MaGioHang = '{UserContext.MaGioHang}'");
-
             return RedirectToAction("Index");
         }
         public IActionResult Contact()
