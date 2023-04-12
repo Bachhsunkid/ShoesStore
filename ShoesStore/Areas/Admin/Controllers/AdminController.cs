@@ -3,6 +3,10 @@ using ShoesStore.Models;
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using ShoesStore.Models.ModelDTOs;
+using Microsoft.Data.SqlClient;
+using System.Data.Common;
+using ShoesStore.Models.ProcedureModels;
 
 namespace ShoesStore.Areas.Admin.Controllers
 {
@@ -18,18 +22,27 @@ namespace ShoesStore.Areas.Admin.Controllers
         {
             _logger = logger;
         }
-		[Route("Index1")]
-		public IActionResult Index1()
-		{
-			// double proc = Convert.ToDouble(db.ProcTienBan30Ngays.FromSql($"Exec TongTienBan30Ngay").FirstOrDefault());
-			var proc = db.ProcTienBan30Ngays.FromSql($"Exec TongTienBan30Ngay").ToList().ElementAt(0);
-            return View(proc);
-		}
+		//[Route("Index1")]
+		//public IActionResult Index1()
+		//{
+		//	// double proc = Convert.ToDouble(db.ProcTienBan30Ngays.FromSql($"Exec TongTienBan30Ngay").FirstOrDefault());
+		//	var proc = db.ProcTienBan30Ngays.FromSql($"Exec TongTienBan30Ngay").ToList().ElementAt(0);
+  //          return View(proc);
+		//}
 		[Route("")]
         [Route("Index")]
 		public IActionResult Index()
 		{
-			var lstNhanVien = db.NhanViens.OrderBy(x => x.MaNv).ToList();
+            AdminContext.SoTienBan30NgayGanNhat = db.ProcTienBan30Ngays.FromSql($"Exec TongTienBan30Ngay").ToList().ElementAt(0);
+
+            int year = 2023;
+            // db.ProcTongTienBanHangThangs.FromSql($"EXEC TongTienBanHangThang {year}").ToList();
+            AdminContext.SoTienBanTrongNam = db.Set<ProcTongTienBanHangThang>()
+                                                    .FromSqlRaw("EXEC TongTienBanHangThang {0}", year)
+                                                    .ToList();
+
+
+            var lstNhanVien = db.NhanViens.OrderBy(x => x.MaNv).ToList();
 			return View(lstNhanVien);
 		}
 		//public IActionResult Index()
