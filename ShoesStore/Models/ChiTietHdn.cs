@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ShoesStore.Models;
 
@@ -9,6 +10,7 @@ public partial class ChiTietHdn
 
     public string? MaGiay { get; set; }
 
+    [Required(ErrorMessage = "Vui lòng nhập số lượng")]
     public int? SoLuong { get; set; }
 
     public decimal? KhuyenMai { get; set; }

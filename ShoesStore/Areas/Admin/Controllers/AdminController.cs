@@ -22,22 +22,14 @@ namespace ShoesStore.Areas.Admin.Controllers
         {
             _logger = logger;
         }
-		//[Route("Index1")]
-		//public IActionResult Index1()
-		//{
-		//	// double proc = Convert.ToDouble(db.ProcTienBan30Ngays.FromSql($"Exec TongTienBan30Ngay").FirstOrDefault());
-		//	var proc = db.ProcTienBan30Ngays.FromSql($"Exec TongTienBan30Ngay").ToList().ElementAt(0);
-  //          return View(proc);
-		//}
 		[Route("")]
         [Route("Index")]
-		public IActionResult Index()
+		public IActionResult Index(int year)
 		{
+            //int year = 2023;
             AdminContext.SoTienBan30NgayGanNhat = db.ProcTienBan30Ngays.FromSql($"Exec TongTienBan30Ngay").ToList().ElementAt(0);
             AdminContext.SoTienNhap30NgayGanNhat = db.ProcTienNhap30Ngays.FromSql($"Exec TongTienNhap30Ngay").ToList().ElementAt(0);
             AdminContext.SoHDB30NgayGanNhat = db.ProcTongHDB30Ngays.FromSql($"Exec TongHDB30Ngay").ToList().ElementAt(0);
-            int year = 2023;
-            // db.ProcTongTienBanHangThangs.FromSql($"EXEC TongTienBanHangThang {year}").ToList();
             AdminContext.SoTienBanTrongNam = db.Set<ProcTongTienBanHangThang>().FromSqlRaw("EXEC TongTienBanHangThang {0}", year).ToList();
 
 
