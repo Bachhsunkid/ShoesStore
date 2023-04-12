@@ -7,7 +7,7 @@ public partial class Giay
 {
     public string MaGiay { get; set; } = null!;
 
-    public string MaLoai { get; set; } = null!;
+    public string? MaLoai { get; set; }
 
     public string? TenGiay { get; set; }
 
@@ -37,5 +37,5 @@ public partial class Giay
 
     public virtual ICollection<ChiTietHdn> ChiTietHdns { get; } = new List<ChiTietHdn>();
 
-    public virtual LoaiGiay MaLoaiNavigation { get; set; } = null!;
+    public virtual LoaiGiay? MaLoaiNavigation { get; set; }
 }

@@ -12,7 +12,7 @@ namespace ShoesStore.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Route("Admin")]
-    [Route("")]
+    //[Route("")]
     public class AdminController : Controller
     {
         Qlbangiaynhom7Context db = new Qlbangiaynhom7Context();
@@ -34,35 +34,21 @@ namespace ShoesStore.Areas.Admin.Controllers
 		public IActionResult Index()
 		{
             AdminContext.SoTienBan30NgayGanNhat = db.ProcTienBan30Ngays.FromSql($"Exec TongTienBan30Ngay").ToList().ElementAt(0);
-
+            AdminContext.SoTienNhap30NgayGanNhat = db.ProcTienNhap30Ngays.FromSql($"Exec TongTienNhap30Ngay").ToList().ElementAt(0);
+            AdminContext.SoHDB30NgayGanNhat = db.ProcTongHDB30Ngays.FromSql($"Exec TongHDB30Ngay").ToList().ElementAt(0);
             int year = 2023;
             // db.ProcTongTienBanHangThangs.FromSql($"EXEC TongTienBanHangThang {year}").ToList();
-            AdminContext.SoTienBanTrongNam = db.Set<ProcTongTienBanHangThang>()
-                                                    .FromSqlRaw("EXEC TongTienBanHangThang {0}", year)
-                                                    .ToList();
+            AdminContext.SoTienBanTrongNam = db.Set<ProcTongTienBanHangThang>().FromSqlRaw("EXEC TongTienBanHangThang {0}", year).ToList();
 
 
             var lstNhanVien = db.NhanViens.OrderBy(x => x.MaNv).ToList();
 			return View(lstNhanVien);
 		}
-		//public IActionResult Index()
-  //      {
-  //          //var lstNhanVien = db.NhanViens.OrderBy(x => x.MaNv).ToList();
-  //          //         double proc = Convert.ToDouble(db.ProcTienBan30Ngays.FromSql($"Exec TongTienBan30Ngay").FirstOrDefault());           
-  //          //         var viewModelProc = new ViewModelProc() {
-  //          //             lstnhanVien = lstNhanVien,
-  //          //             procTiens = proc
-  //          //         };
-  //          //         return View(viewModelProc);
-  //          return View();
-  //      }
+
 		[Route("Products")]
         public IActionResult Products()
         {
             var lstGiay = db.Giays.OrderBy(x => x.MaGiay).ToList();
-            //var lstGiay = db.Giays.GroupBy(x => x.TenGiay)
-                        //.Select(group => group.First())
-                        //.ToList();
             return View(lstGiay);
         }
         [Route("TypeProducts")]

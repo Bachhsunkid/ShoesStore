@@ -7,7 +7,7 @@ public partial class NhanVien
 {
     public string MaNv { get; set; } = null!;
 
-    public string TaiKhoan { get; set; } = null!;
+    public string? TaiKhoan { get; set; }
 
     public byte GioiTinh { get; set; }
 
@@ -29,5 +29,5 @@ public partial class NhanVien
 
     public virtual ICollection<HoaDonNhap> HoaDonNhaps { get; } = new List<HoaDonNhap>();
 
-    public virtual Tuser TaiKhoanNavigation { get; set; } = null!;
+    public virtual Tuser? TaiKhoanNavigation { get; set; }
 }
