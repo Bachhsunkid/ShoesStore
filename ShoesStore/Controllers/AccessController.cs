@@ -32,7 +32,7 @@ namespace ShoesStore.Controllers
                 {
                     if (obj.Role == 0)
                     {
-                        return RedirectToAction("Index", "HomeAdmin", new { area = "Admin" });
+                        return RedirectToAction("Index", "Admin", new { area = "Admin" });
                     }
                     else
                     {

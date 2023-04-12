@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ShoesStore.Models;
 
 public partial class HoaDonBan
 {
+    [Required(ErrorMessage = "Vui lòng nhập mã hoá đơn")]
     public string MaHdb { get; set; } = null!;
 
     public string? MaNv { get; set; }
 
     public string? MaKh { get; set; }
 
+    [Required(ErrorMessage = "Vui lòng nhập ngày bán")]
     public DateTime? NgayBan { get; set; }
 
     public byte? TrangThai { get; set; }
