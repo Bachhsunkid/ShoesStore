@@ -7,12 +7,12 @@ using ShoesStore.Models.ModelDTOs;
 using Microsoft.Data.SqlClient;
 using System.Data.Common;
 using ShoesStore.Models.ProcedureModels;
+using ShoesStore.Models.Authentication;
 
 namespace ShoesStore.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Route("Admin")]
-    //[Route("")]
     public class AdminController : Controller
     {
         Qlbangiaynhom7Context db = new Qlbangiaynhom7Context();
@@ -22,9 +22,11 @@ namespace ShoesStore.Areas.Admin.Controllers
         {
             _logger = logger;
         }
+
 		[Route("")]
         [Route("Index")]
-		public IActionResult Index()
+        [AuthenticationAdmin]
+        public IActionResult Index()
 		{
             AdminContext.SoTienBan30NgayGanNhat = db.ProcTienBan30Ngays.FromSql($"Exec TongTienBan30Ngay").ToList().ElementAt(0);
             AdminContext.SoTienNhap30NgayGanNhat = db.ProcTienNhap30Ngays.FromSql($"Exec TongTienNhap30Ngay").ToList().ElementAt(0);

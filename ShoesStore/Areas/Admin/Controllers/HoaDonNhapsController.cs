@@ -6,10 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ShoesStore.Models;
+using ShoesStore.Models.Authentication;
 
 namespace ShoesStore.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [AuthenticationAdmin]
     public class HoaDonNhapsController : Controller
     {
         private readonly Qlbangiaynhom7Context _context;
