@@ -1,8 +1,10 @@
+using ShoesStore.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddDbContext<Qlbangiaynhom7Context>();
 
 builder.Services.AddSession();
 
@@ -25,8 +27,11 @@ app.UseAuthorization();
 
 app.UseSession();
 
+//app.MapControllerRoute(
+//    name: "default",
+//    pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    name: "Areas",
+    pattern: "{area:exists}/{controller=Admin}/{action=Index}/{id?}");
 
 app.Run();
