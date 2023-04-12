@@ -1,7 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using ShoesStore.Models;
 using ShoesStore.Models.ModelDTOs;
+using ShoesStore.Models.ProcedureModels;
 using ShoesStore.ViewModels;
+using System.Data.Common;
 using System.Diagnostics;
 using System.Drawing.Printing;
 using System.Linq;
@@ -225,34 +230,52 @@ namespace ShoesStore.Controllers
             return temp;
         }
 
-        /// <summary>
-        /// lấy dữ liệu và gửi cho trang Cart
-        /// </summary>
-        /// <param name="page"></param>
-        /// <returns></returns>
-        //[Authentication]
-        public IActionResult Cart()
-        {
-            List<ChiTietGioHangGiayModel> lstShoesInCart = new List<ChiTietGioHangGiayModel>();
-            var giaycart = db.ChiTietGioHangs.Where(x => x.MaGioHang == UserContext.MaGioHang).ToList();
-
-            foreach(var item in giaycart)
-            {
-                lstShoesInCart.Add(new ChiTietGioHangGiayModel()
-                {
-                    ChiTietGioHang = item,
-                    Giay = db.Giays.Find(item.MaGiay)
-                }); 
-                  
-            }
-            
-            return View(lstShoesInCart);
-        }
+        
+        
 
         //[Authentication]
         public IActionResult Checkout()
         {
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult PlaceAnOrder(string fullName, string phoneNumber, string address)
+        {
+            //Cập nhật thông tin khách hàng
+            var customer = db.KhachHangs.Find(UserContext.MaKH);
+            if(customer != null)
+            {
+                customer.TenKh = fullName;
+                customer.SoDienThoai = phoneNumber;
+                customer.DiaChi = address;
+                db.KhachHangs.Update(customer);
+                db.SaveChanges();
+
+                //Tạo hóa đơn bán
+                string maHDB = db.Set<ProcPlaceAnOrder>().FromSqlRaw("EXEC proc_HoaDonBan_PlaceAnOrder {0}", UserContext.MaKH)
+                                          .ToList().ElementAt(0).ID;
+
+                //chuyển dữ liệu từ giỏ hàng sang hóa đơn bán
+                List<ChiTietGioHangGiayModel> lstShoesInCart = new List<ChiTietGioHangGiayModel>();
+                var giaycart = db.ChiTietGioHangs.Where(x => x.MaGioHang == UserContext.MaGioHang).ToList();
+
+                foreach (var item in giaycart)
+                {
+                    db.ChiTietHdbs.Add(new ChiTietHdb
+                    {
+                        MaHdb = maHDB,
+                        MaGiay = db.Giays.Find(item.MaGiay).MaGiay,
+                        SoLuong = item.SoLuong,
+                        KhuyenMai = 0
+                    });
+                    db.SaveChanges();
+                }
+
+                //Clear gio hang
+                db.Database.ExecuteSqlRaw($"DELETE FROM chitietgiohang WHERE MaGioHang = '{UserContext.MaGioHang}'");
+            }
+            return RedirectToAction("Index");
         }
         public IActionResult Contact()
         {
@@ -264,50 +287,7 @@ namespace ShoesStore.Controllers
             return View();
         }
 
-        /// <summary>
-        /// Thêm sản phầm vào giỏ hàng
-        /// </summary>
-        /// <param name="maGioHang"></param>
-        /// <param name="maGiay"></param>
-        /// <param name="soLuong"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public IActionResult AddToCart(string maGioHang, string maGiay, int soLuong = 1)
-        {
-            try
-            {
-                if(maGioHang == null)
-                {
-                    return StatusCode(StatusCodes.Status400BadRequest);
-                }
 
-                var item = db.ChiTietGioHangs.FirstOrDefault(x => x.MaGioHang == maGioHang && x.MaGiay == maGiay);
-
-                if (item != null)
-                {
-                    item.SoLuong += soLuong;
-                    db.ChiTietGioHangs.Update(item);
-                }
-                else
-                {
-                    ChiTietGioHang chiTietGioHang = new ChiTietGioHang()
-                    {
-                        MaGioHang = maGioHang,
-                        MaGiay = maGiay,
-                        SoLuong = soLuong
-                    };
-                    db.ChiTietGioHangs.Add(chiTietGioHang);
-                }
-                UserContext.SoSanPham += soLuong;
-                db.SaveChanges();
-                return Ok();
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine(e.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-        }
         //public IActionResult Blog()
         //{
         //    return View();

@@ -34,7 +34,7 @@
                     <li><a class="dropdown-item" href="#!">Settings</a></li>
                     <li><a class="dropdown-item" href="#!">Activity Log</a></li>
                     <li><hr class="dropdown-divider" /></li>
-                    <li><a class="dropdown-item" href="#!">Logout</a></li>
+                    <li><a class="dropdown-item" asp-action="Logout" asp-controller="Access">Logout</a></li>
                 </ul>
             </li>
         </ul>
@@ -123,10 +123,10 @@
                             <div class="card bg-primary text-white mb-4">
                                 <div class="card-body">Tổng tiền bán 30 ngày</div>
                                 <div class="card-footer d-flex align-items-center justify-content-between">
-                                    <a class="small text-white stretched-link" href="#">
-                                        @AdminContext.SoTienBan30NgayGanNhat.Count;
+                                    <a class="small text-white stretched-link">
+                                        @AdminContext.SoTienBan30NgayGanNhat.Count.ToString("G29")$
                                     </a>
-                                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    <div class="small text-white"></div>
                                 </div>
                             </div>
                         </div>
@@ -134,8 +134,10 @@
                             <div class="card bg-warning text-white mb-4">
                                 <div class="card-body">Tổng tiền nhập 30 ngày</div>
                                 <div class="card-footer d-flex align-items-center justify-content-between">
-                                    <a class="small text-white stretched-link" href="#">View Details</a>
-                                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    <a class="small text-white stretched-link">
+                                        @AdminContext.SoTienNhap30NgayGanNhat.Count.ToString("G29")$
+                                    </a>
+                                    <div class="small text-white"></div>
                                 </div>
                             </div>
                         </div>
@@ -143,34 +145,33 @@
                             <div class="card bg-success text-white mb-4">
                                 <div class="card-body">Tổng HĐB 30 ngày</div>
                                 <div class="card-footer d-flex align-items-center justify-content-between">
-                                    <a class="small text-white stretched-link" href="#">View Details</a>
-                                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    <a class="small text-white stretched-link" href="#">
+                                        @AdminContext.SoHDB30NgayGanNhat.Count
+                                    </a>
+                                    <div class="small text-white"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-@*                        <div class="col-xl-6">
+                        <div class="col-xl-12">
                             <div class="card mb-4">
                                 <div class="card-header">
-                                    <i class="fas fa-chart-area me-1"></i>
-                                    area chart example
+                                    <div class="d-flex justify-content-between">
+                                        <i class="fas fa-chart-bar me-1"></i>
+                                        <select id="yearOfChart" onchange="reloadChartData()">
+                                            <option value="2023">2023</option>
+                                            <option value="2022">2022</option>
+                                            <option value="2021">2021</option>
+                                            <option value="2020">2020</option>
+                                            <option value="2019">2019</option>
+                                        </select>
+                                    </div>
                                 </div>
-                                <div class="card-body"><canvas id="myareachart" width="100%" height="40"></canvas></div>
-                            </div>
-                        </div>*@
-                        <div class="col-xl-6">
-                            <div class="card mb-4">
-                                <div class="card-header">
-                                    <i class="fas fa-chart-bar me-1"></i>
-                                    @foreach(var item in AdminContext.SoTienBanTrongNam)
-                                    {
-                                        @item.Value;
-                                    }
-                                </div>
-                                <div class="card-body"><canvas id="myBarChart" width="100%" height="40"></canvas></div>
+                                @await Html.PartialAsync("_IndexChart", AdminContext.SoTienBanTrongNam)
                             </div>
                         </div>
+
                     </div>
                     <div class="card mb-4">
                         <div class="card-header">
@@ -196,7 +197,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-@RenderBody()
+                                    @RenderBody()
                                 </tbody>
                             </table>
                         </div>
@@ -219,6 +220,7 @@
     </div>
     <div>
     </div>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="~/admin/js/scripts.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
@@ -226,6 +228,37 @@
     <script src="~/admin/assets/demo/chart-bar-demo.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
     <script src="~/admin/js/datatables-simple-demo.js"></script>
+   <script src="~/js/jquery-3.2.1.min.js"></script>
+
+    <script>
+
+        //$('#yearOfChart').change(function () {
+        //    var selectedYear = $(this).val();
+        //    console.log(selectedYear);
+        // });
+
+
+        function reloadChartData() {
+            var selectedYear = $("#yearOfChart").val();
+            console.log("Selected year: " + selectedYear);
+
+            $.ajax({
+                url: '@Url.Action("GetChartData", "Admin", new {Area = "Admin" })',
+                method: 'POST',
+                data: {
+                    year: selectedYear
+                },
+                success: function (response) {
+                    console.log(response);
+                    $('#indexChart').html(response);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        }
+    </script>
+
 </body>
 </html>
 

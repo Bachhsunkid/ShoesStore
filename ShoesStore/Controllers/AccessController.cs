@@ -27,12 +27,15 @@ namespace ShoesStore.Controllers
         {
             if (HttpContext.Session.GetString("TaiKhoan") == null)
             {
-                var obj = db.Tusers.Where(x => x.TaiKhoan == user.TaiKhoan && x.MatKhau == user.MatKhau).FirstOrDefault();
+                var obj = db.Tusers.FirstOrDefault(x => x.TaiKhoan == user.TaiKhoan && x.MatKhau == user.MatKhau);
                 if (obj != null)
                 {
+                    HttpContext.Session.SetString("TaiKhoan", obj.TaiKhoan.ToString());
+                    HttpContext.Session.SetInt32("Role", obj.Role);
+
                     if (obj.Role == 0)
                     {
-                        return RedirectToAction("Index", "HomeAdmin", new { area = "Admin" });
+                        return RedirectToAction("Index", "Admin", new { area = "Admin" });
                     }
                     else
                     {
@@ -52,9 +55,6 @@ namespace ShoesStore.Controllers
                         UserContext.SoSanPham = (int)db.ChiTietGioHangs.Where(c => c.MaGioHang == UserContext.MaGioHang).Sum(c => c.SoLuong);
                         return RedirectToAction("Index", "Home");
                     }
-
-                    HttpContext.Session.SetString("TaiKhoan", obj.TaiKhoan.ToString());
-                    return RedirectToAction("Index", "Home");
                 }
                 else
                 {
@@ -80,13 +80,6 @@ namespace ShoesStore.Controllers
                 var check = db.Tusers.FirstOrDefault(s => s.TaiKhoan == user.TaiKhoan);
                 if (check == null)
                 {
-                    //user.Role = 1;
-                    //db.Tusers.Add(user);
-                    //db.SaveChanges();
-                    //var taiKhoan = new SqlParameter("@TaiKhoan", user.TaiKhoan);
-                    //var matKhau = new SqlParameter("@MatKhau", user.MatKhau);
-                    //db.ExecuteSqlCommand("InsertUser @TaiKhoan, @MatKhau", taiKhoan, matKhau);
-
                     var nameParam = new SqlParameter("@TaiKhoan", user.TaiKhoan);
                     var emailParam = new SqlParameter("@MatKhau", user.MatKhau);
                     var parameters = new DbParameter[] { nameParam, emailParam };

@@ -42,9 +42,15 @@ public partial class Qlbangiaynhom7Context : DbContext
 
     public virtual DbSet<ProcTienBan30Ngay> ProcTienBan30Ngays { get; set; }
 
-	public virtual DbSet<ProcTongTienBanHangThang> ProcTongTienBanHangThangs { get; set; }
+    public virtual DbSet<ProcTienNhap30Ngay> ProcTienNhap30Ngays { get; set; }
 
-	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    public virtual DbSet<ProcTongHDB30Ngay> ProcTongHDB30Ngays { get; set; }
+
+    public virtual DbSet<ProcTongTienBanHangThang> ProcTongTienBanHangThangs { get; set; }
+    
+    public virtual DbSet<ProcPlaceAnOrder> ProcPlaceAnOrders { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Data Source=qlbangiaynhom7.mssql.somee.com;Initial Catalog=qlbangiaynhom7;User ID=qlbangiay-team7_SQLLogin_1;Password=mmjpff1mgt;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
 
@@ -88,12 +94,12 @@ public partial class Qlbangiaynhom7Context : DbContext
 
             entity.HasOne(d => d.MaGiayNavigation).WithMany(p => p.ChiTietHdbs)
                 .HasForeignKey(d => d.MaGiay)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                //.OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__ChiTietHD__MaGia__45F365D3");
 
             entity.HasOne(d => d.MaHdbNavigation).WithMany(p => p.ChiTietHdbs)
                 .HasForeignKey(d => d.MaHdb)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                //.OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__ChiTietHD__MaHDB__44FF419A");
         });
 
@@ -115,12 +121,12 @@ public partial class Qlbangiaynhom7Context : DbContext
 
             entity.HasOne(d => d.MaGiayNavigation).WithMany(p => p.ChiTietHdns)
                 .HasForeignKey(d => d.MaGiay)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__ChiTietHD__MaGia__3E52440B");
+                //.OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__ChiTietHD__MaGia__3E52440B"); 
 
             entity.HasOne(d => d.MaHdnNavigation).WithMany(p => p.ChiTietHdns)
                 .HasForeignKey(d => d.MaHdn)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                //.OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__ChiTietHD__MaHDN__3D5E1FD2");
         });
 
@@ -138,11 +144,11 @@ public partial class Qlbangiaynhom7Context : DbContext
             entity.Property(e => e.MaLoai).HasMaxLength(20);
             entity.Property(e => e.MauSac).HasMaxLength(50);
             entity.Property(e => e.TenGiay).HasMaxLength(100);
-            //entity.Property(e => e.TinhTrang).HasMaxLength(25);
+            entity.Property(e => e.TinhTrang).HasMaxLength(25);
 
             entity.HasOne(d => d.MaLoaiNavigation).WithMany(p => p.Giays)
                 .HasForeignKey(d => d.MaLoai)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                //.OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Giay__MaLoai__300424B4");
         });
 
@@ -288,7 +294,7 @@ public partial class Qlbangiaynhom7Context : DbContext
 
             entity.HasOne(d => d.TaiKhoanNavigation).WithMany(p => p.NhanViens)
                 .HasForeignKey(d => d.TaiKhoan)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                //.OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__NhanVien__TaiKho__267ABA7A");
         });
 
