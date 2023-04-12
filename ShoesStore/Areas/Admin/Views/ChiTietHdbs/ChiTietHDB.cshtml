@@ -1,0 +1,11 @@
+﻿@model List<ChiTietHdb>
+<h3>Chi tiết hoá đơn</h3>
+@foreach(var item in Model)
+{
+	<div>
+		<a>Giày: </a>@item.MaGiay
+	</div>
+	<div>
+		<a>Số lượng: </a>@item.SoLuong
+	</div>
+}
