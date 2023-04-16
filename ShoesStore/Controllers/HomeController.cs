@@ -10,7 +10,6 @@ using System.Data.Common;
 using System.Diagnostics;
 using System.Drawing.Printing;
 using System.Linq;
-using WebN02.Models.Authentication;
 using X.PagedList;
 
 namespace ShoesStore.Controllers
