@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace WebN02.Models.Authentication
+namespace ShoesStore.Models.Authentication
 {
     public class Authentication:ActionFilterAttribute
     {

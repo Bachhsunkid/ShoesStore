@@ -23,9 +23,15 @@ namespace ShoesStore.Areas.Admin.Controllers
 			List<ChiTietHdb> temp = _context.ChiTietHdbs.Where(x => x.MaHdb == maHD).ToList();
 			return View(temp);
         }
+		public IActionResult XoaCTHDB(String maHD, String maGiay)
+		{
+			_context.Remove(_context.ChiTietHdbs.Find(maHD, maGiay));
+			_context.SaveChanges();
+			return RedirectToAction("ChiTietHDB", "ChiTietHdbs", new { maHD = maHD });
+		}
 
-        // GET: Admin/ChiTietHdbs
-        public async Task<IActionResult> Index()
+		// GET: Admin/ChiTietHdbs
+		public async Task<IActionResult> Index()
         {
             var qlbangiaynhom7Context = _context.ChiTietHdbs.Include(c => c.MaGiayNavigation).Include(c => c.MaHdbNavigation);
             return View(await qlbangiaynhom7Context.ToListAsync());

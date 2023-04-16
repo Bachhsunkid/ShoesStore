@@ -4,7 +4,7 @@ using ShoesStore.Models.ModelDTOs;
 using ShoesStore.ViewModels;
 using System.Diagnostics;
 using System.Linq;
-using WebN02.Models.Authentication;
+using ShoesStore.Models.Authentication;
 using X.PagedList;
 
 namespace ShoesStore.Controllers
