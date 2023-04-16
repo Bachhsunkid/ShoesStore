@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using ShoesStore.Models;
 using ShoesStore.Models.ModelDTOs;
 using System.Data.Common;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace ShoesStore.Controllers
 {
@@ -27,7 +29,7 @@ namespace ShoesStore.Controllers
         {
             if (HttpContext.Session.GetString("TaiKhoan") == null)
             {
-                var obj = db.Tusers.FirstOrDefault(x => x.TaiKhoan == user.TaiKhoan && x.MatKhau == user.MatKhau);
+                var obj = db.Tusers.FirstOrDefault(x => x.TaiKhoan == user.TaiKhoan && x.MatKhau == Encrypt(user.TaiKhoan, user.MatKhau));
                 if (obj != null)
                 {
                     HttpContext.Session.SetString("TaiKhoan", obj.TaiKhoan.ToString());
@@ -81,7 +83,7 @@ namespace ShoesStore.Controllers
                 if (check == null)
                 {
                     var nameParam = new SqlParameter("@TaiKhoan", user.TaiKhoan);
-                    var emailParam = new SqlParameter("@MatKhau", user.MatKhau);
+                    var emailParam = new SqlParameter("@MatKhau", Encrypt(user.TaiKhoan, user.MatKhau));
                     var parameters = new DbParameter[] { nameParam, emailParam };
 
                     db.Database.ExecuteSqlRaw("EXEC InsertUser @TaiKhoan, @MatKhau", parameters);
@@ -105,6 +107,53 @@ namespace ShoesStore.Controllers
             UserContext.MaKH = "";
             UserContext.MaGioHang = "";
             return RedirectToAction("Login", "Access");
+        }
+
+
+        private string Encrypt(string key, string clearText)
+        {
+            string encryptionKey = key;
+            byte[] clearBytes = Encoding.Unicode.GetBytes(clearText);
+            using (Aes encryptor = Aes.Create())
+            {
+                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(encryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+                encryptor.Key = pdb.GetBytes(32);
+                encryptor.IV = pdb.GetBytes(16);
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateEncryptor(), CryptoStreamMode.Write))
+                    {
+                        cs.Write(clearBytes, 0, clearBytes.Length);
+                        cs.Close();
+                    }
+                    clearText = Convert.ToBase64String(ms.ToArray());
+                }
+            }
+
+            return clearText;
+        }
+
+        private string Decrypt(string key, string cipherText)
+        {
+            string encryptionKey = key;
+            byte[] cipherBytes = Convert.FromBase64String(cipherText);
+            using (Aes encryptor = Aes.Create())
+            {
+                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(encryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+                encryptor.Key = pdb.GetBytes(32);
+                encryptor.IV = pdb.GetBytes(16);
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateDecryptor(), CryptoStreamMode.Write))
+                    {
+                        cs.Write(cipherBytes, 0, cipherBytes.Length);
+                        cs.Close();
+                    }
+                    cipherText = Encoding.Unicode.GetString(ms.ToArray());
+                }
+            }
+
+            return cipherText;
         }
     }
 }
