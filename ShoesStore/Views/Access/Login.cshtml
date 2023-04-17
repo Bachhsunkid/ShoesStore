@@ -28,8 +28,8 @@
                     <div class="signin-image">
                         <figure><img src="../LayoutLogin/images/signin-image.jpg" alt="sing up image"></figure>
                         <a asp-action="SignUp" asp-controller="Access" class="signup-image-link">Create an account</a>
+                        <a asp-action="Index" asp-controller="Home" class="signup-image-link">Or Sign in without account</a>
                     </div>
-
                     <div class="signin-form">
                         <h2 class="form-title">Sign up</h2>
                         @using(Html.BeginForm("Login","Access", FormMethod.Post)){

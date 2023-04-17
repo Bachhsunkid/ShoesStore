@@ -273,6 +273,7 @@ namespace ShoesStore.Controllers
 
                 //Clear gio hang
                 db.Database.ExecuteSqlRaw($"DELETE FROM chitietgiohang WHERE MaGioHang = '{UserContext.MaGioHang}'");
+                UserContext.SoSanPham = 0;
             }
             return RedirectToAction("Index");
         }
