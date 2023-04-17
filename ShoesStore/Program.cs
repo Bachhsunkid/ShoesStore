@@ -25,7 +25,6 @@ app.UseRouting();
 
 app.UseAuthorization();
 app.UseSession();
-
 app.MapControllerRoute(
     name: "MyArea",
     pattern: "{area:exists}/{controller=Admin}/{action=Index}/{id?}");
