@@ -112,7 +112,7 @@ namespace ShoesStore.Controllers
 
         private string Encrypt(string key, string clearText)
         {
-            string encryptionKey = key;
+            string encryptionKey = key + "jqk";
             byte[] clearBytes = Encoding.Unicode.GetBytes(clearText);
             using (Aes encryptor = Aes.Create())
             {
@@ -135,7 +135,7 @@ namespace ShoesStore.Controllers
 
         private string Decrypt(string key, string cipherText)
         {
-            string encryptionKey = key;
+            string encryptionKey = key + "jqk";
             byte[] cipherBytes = Convert.FromBase64String(cipherText);
             using (Aes encryptor = Aes.Create())
             {
