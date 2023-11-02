@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using ShoesStore.Models.ProcedureModels;
 
 namespace ShoesStore.Models;
@@ -53,7 +54,6 @@ public partial class Qlbangiaynhom7Context : DbContext
     //Connection string for deployed database
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("data source=QLBanGiay.mssql.somee.com;initial catalog=QLBanGiay;user id=qlbangiay_SQLLogin_1;password=lertr2t3ef;connect timeout=30;encrypt=false;trustservercertificate=false;applicationintent=readwrite;multisubnetfailover=false");
-
     //Connection string for local
     //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //=> optionsBuilder.UseSqlServer("Server= DESKTOP-NT6Q85Q; Database= QLBanGiay; Integrated Security=True;TrustServerCertificate=true;");
