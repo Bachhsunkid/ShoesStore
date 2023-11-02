@@ -47,7 +47,8 @@ namespace ShoesStore.Controllers
                                      join KhachHang in db.KhachHangs
                                      on UserContext.TaiKhoan equals KhachHang.TaiKhoan
                                      select KhachHang.MaKh;
-                        UserContext.MaKH = query1.ToList().ElementAt(0);
+                        var kh = query1.ToList();
+                        UserContext.MaKH = kh.ElementAt(0);
 
                         var query2 = from KhachHang in db.KhachHangs
                                      join GioHang in db.GioHangs
